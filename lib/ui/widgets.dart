@@ -162,16 +162,49 @@ class PillToggle extends StatelessWidget {
   }
 }
 
-Future<void> showInfoModal(BuildContext context,
-    {required String title, required String message}) {
+Future<void> showInfoModal(
+  BuildContext context, {
+  required String title,
+  required String message,
+}) {
   return showDialog(
     context: context,
     builder: (_) => AlertDialog(
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w900)),
-      content: Text(message),
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontWeight: FontWeight.w900,
+          fontSize: 18,
+          color: Colors.black,
+        ),
+      ),
+      content: Text(
+        message,
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: Colors.black87,
+        ),
+      ),
+      actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       actions: [
-        TextButton(
-            onPressed: () => Navigator.pop(context), child: const Text("OK"))
+        FilledButton(
+          onPressed: () => Navigator.pop(context),
+          style: FilledButton.styleFrom(
+            backgroundColor: Colors.blue,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          child: const Text(
+            "OK",
+            style: TextStyle(fontWeight: FontWeight.w800),
+          ),
+        ),
       ],
     ),
   );

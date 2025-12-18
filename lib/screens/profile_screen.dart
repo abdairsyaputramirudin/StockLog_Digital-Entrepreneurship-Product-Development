@@ -71,7 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: Colors.white, // ✅ hilangkan pink
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
         ),
@@ -80,7 +80,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           style: TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 18,
-            color: Colors.black, // ✅ judul tidak putih
+            color: Colors.black,
           ),
         ),
         content: const Text(
@@ -107,7 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(
-              backgroundColor: Colors.blue, // ✅ tema biru
+              backgroundColor: Colors.blue,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
