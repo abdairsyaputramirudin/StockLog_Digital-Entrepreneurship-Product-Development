@@ -474,10 +474,8 @@ class _StockScreenState extends State<StockScreen> {
 
       final db = await AppDb.instance.db;
 
-      // hapus item
       await db.delete('items', where: 'id = ?', whereArgs: [item.id]);
 
-      // opsional: hapus transaksi yg terkait item tsb, biar rapi
       await db
           .delete('transactions', where: 'itemId = ?', whereArgs: [item.id]);
 
@@ -491,58 +489,90 @@ class _StockScreenState extends State<StockScreen> {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      showDragHandle: true,
+      showDragHandle: false,
+      backgroundColor: Colors.white, // ✅ hilangkan pink
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+      ),
       builder: (_) {
         final pad = MediaQuery.of(context).viewInsets.bottom;
-        return Padding(
-          padding: EdgeInsets.fromLTRB(16, 0, 16, 16 + pad),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  const Expanded(
-                    child: Text(
-                      "UBAH PRODUK",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
-                    ),
+
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+                  surface: Colors.white,
+                  surfaceTint: Colors.white,
+                ),
+          ),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(16, 12, 16, 16 + pad),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // drag handle manual (biar mirip HiFi)
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.black26,
+                    borderRadius: BorderRadius.circular(999),
                   ),
-                  IconButton(
+                ),
+
+                Row(
+                  children: [
+                    const Expanded(
+                      child: Text(
+                        "UBAH PRODUK",
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.black),
+                      ),
+                    ),
+                    IconButton(
                       onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.close)),
-                ],
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                  controller: nameCtrl,
-                  decoration: const InputDecoration(hintText: "Nama Barang")),
-              const SizedBox(height: 10),
-              TextField(
-                  controller: qtyCtrl,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(hintText: "Jumlah")),
-              const SizedBox(height: 10),
-              TextField(
-                  controller: priceCtrl,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(hintText: "Harga (Modal)")),
-              const SizedBox(height: 10),
-              TextField(
-                  controller: noteCtrl,
-                  decoration: const InputDecoration(hintText: "Catatan")),
-              const SizedBox(height: 14),
-              SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                      onPressed: save, child: const Text("SIMPAN"))),
-              const SizedBox(height: 8),
-              SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                      onPressed: deleteItem,
-                      child: const Text("HAPUS PRODUK"))),
-            ],
+                      icon: const Icon(Icons.close),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+
+                // ✅ bagian form kamu tetap sama, jangan ubah isinya
+                TextField(
+                    controller: nameCtrl,
+                    decoration: const InputDecoration(hintText: "Nama Barang")),
+                const SizedBox(height: 10),
+                TextField(
+                    controller: qtyCtrl,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(hintText: "Jumlah")),
+                const SizedBox(height: 10),
+                TextField(
+                    controller: priceCtrl,
+                    keyboardType: TextInputType.number,
+                    decoration:
+                        const InputDecoration(hintText: "Harga (Modal)")),
+                const SizedBox(height: 10),
+                TextField(
+                    controller: noteCtrl,
+                    decoration: const InputDecoration(hintText: "Catatan")),
+
+                const SizedBox(height: 14),
+                SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                        onPressed: save, child: const Text("SIMPAN"))),
+                const SizedBox(height: 8),
+                SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                        onPressed: deleteItem,
+                        child: const Text("HAPUS PRODUK"))),
+              ],
+            ),
           ),
         );
       },
