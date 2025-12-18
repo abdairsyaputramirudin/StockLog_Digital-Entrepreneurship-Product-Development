@@ -91,105 +91,113 @@ class _StockScreenState extends State<StockScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       builder: (_) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: Theme.of(context).colorScheme.copyWith(
-                  surface: Colors.white,
-                  surfaceTint: Colors.white,
-                ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // drag handle manual (HiFi look)
-                Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 12),
+        return StatefulBuilder(
+          builder: (ctx, setLocal) {
+            Widget chip(String label, bool active, VoidCallback onTap) {
+              return InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(999),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   decoration: BoxDecoration(
-                    color: Colors.black26,
+                    color: active ? Colors.blue : const Color(0xFFE9EEF9),
                     borderRadius: BorderRadius.circular(999),
                   ),
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      color: active ? Colors.white : Colors.blue,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
                 ),
+              );
+            }
 
-                Row(
+            return Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: Theme.of(context).colorScheme.copyWith(
+                      surface: Colors.white,
+                      surfaceTint: Colors.white,
+                    ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Expanded(
-                      child: Text(
-                        "URUTKAN",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.black,
-                        ),
+                    Container(
+                      width: 40,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.black26,
+                        borderRadius: BorderRadius.circular(999),
                       ),
                     ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.close),
+                    Row(
+                      children: [
+                        const Expanded(
+                          child: Text(
+                            "URUTKAN",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w900),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.close),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "BERDASARKAN",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w900, color: Colors.black54),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Wrap(spacing: 10, runSpacing: 10, children: [
+                      chip("ID", localField == SortField.id,
+                          () => setLocal(() => localField = SortField.id)),
+                      chip("Nama", localField == SortField.name,
+                          () => setLocal(() => localField = SortField.name)),
+                      chip("Jumlah", localField == SortField.qty,
+                          () => setLocal(() => localField = SortField.qty)),
+                      chip("Harga", localField == SortField.price,
+                          () => setLocal(() => localField = SortField.price)),
+                    ]),
+                    const SizedBox(height: 12),
+                    Wrap(spacing: 10, runSpacing: 10, children: [
+                      chip("Terendah", localDir == SortDir.low,
+                          () => setLocal(() => localDir = SortDir.low)),
+                      chip("Tertinggi", localDir == SortDir.high,
+                          () => setLocal(() => localDir = SortDir.high)),
+                    ]),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton(
+                        onPressed: () async {
+                          Navigator.pop(context);
+                          setState(() {
+                            sortField = localField;
+                            sortDir = localDir;
+                          });
+                          await load();
+                        },
+                        child: const Text("OK"),
+                      ),
                     ),
                   ],
                 ),
-
-                const SizedBox(height: 10),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "BERDASARKAN",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-
-                Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
-                  children: [
-                    _sortChip("ID", localField == SortField.id,
-                        () => setState(() => localField = SortField.id)),
-                    _sortChip("Nama", localField == SortField.name,
-                        () => setState(() => localField = SortField.name)),
-                    _sortChip("Jumlah", localField == SortField.qty,
-                        () => setState(() => localField = SortField.qty)),
-                    _sortChip("Harga", localField == SortField.price,
-                        () => setState(() => localField = SortField.price)),
-                  ],
-                ),
-
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 10,
-                  children: [
-                    _sortChip("Terendah", localDir == SortDir.low,
-                        () => setState(() => localDir = SortDir.low)),
-                    _sortChip("Tertinggi", localDir == SortDir.high,
-                        () => setState(() => localDir = SortDir.high)),
-                  ],
-                ),
-
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      setState(() {
-                        sortField = localField;
-                        sortDir = localDir;
-                      });
-                      await load();
-                    },
-                    child: const Text("OK"),
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
