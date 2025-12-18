@@ -20,6 +20,93 @@ class StockScreen extends StatefulWidget {
 }
 
 class _StockScreenState extends State<StockScreen> {
+  Widget _miniTableHeader() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black),
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+      ),
+      child: const Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text("ID",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w900)),
+          ),
+          Expanded(
+            flex: 5,
+            child: Text("Nama Barang",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w900)),
+          ),
+          Expanded(
+            flex: 3,
+            child: Text("Jumlah",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w900)),
+          ),
+          Expanded(
+            flex: 4,
+            child: Text("Harga",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w900)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _miniTableRow({
+    required String id,
+    required String name,
+    required String qty,
+    required String price,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black),
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text(id,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontWeight: FontWeight.w800)),
+          ),
+          Expanded(
+            flex: 5,
+            child: Text(
+              name,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontWeight: FontWeight.w800),
+            ),
+          ),
+          Expanded(
+            flex: 3,
+            child: Text(qty,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontWeight: FontWeight.w800)),
+          ),
+          Expanded(
+            flex: 4,
+            child: Text(price,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontWeight: FontWeight.w800)),
+          ),
+        ],
+      ),
+    );
+  }
+
   final searchCtrl = TextEditingController();
 
   List<ItemRow> items = [];
@@ -306,101 +393,145 @@ class _StockScreenState extends State<StockScreen> {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      showDragHandle: true,
+      showDragHandle: false,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+      ),
       builder: (_) {
         final pad = MediaQuery.of(context).viewInsets.bottom;
         return StatefulBuilder(
           builder: (ctx, setLocal) {
-            return Padding(
-              padding: EdgeInsets.fromLTRB(16, 0, 16, 16 + pad),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      const Expanded(
+            return Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: Theme.of(context).colorScheme.copyWith(
+                      surface: Colors.white,
+                      surfaceTint: Colors.white,
+                    ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(16, 12, 16, 16 + pad),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // drag handle manual
+                    Container(
+                      width: 40,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.black26,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    ),
+
+                    // Header title + close
+                    Row(
+                      children: [
+                        const Expanded(
+                          child: Text(
+                            "PROSES BARANG",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.close),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    // Card tabel mini (rata kolom)
+                    AppCard(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        children: [
+                          _miniTableHeader(),
+                          const SizedBox(height: 8),
+                          _miniTableRow(
+                            id: item.id,
+                            name: item.name,
+                            qty: "${item.qty}",
+                            price: rupiah(item.costPrice),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Silahkan tentukan berapa yang ingin anda keluarkan ?",
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+
+                    TextField(
+                      controller: qtyCtrl,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(hintText: "Jumlah"),
+                    ),
+                    const SizedBox(height: 10),
+
+                    TextField(
+                      controller: sellCtrl,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(hintText: "Harga Jual"),
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Tanggal (date picker)
+                    InkWell(
+                      onTap: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: selectedDate,
+                          firstDate: DateTime(2020),
+                          lastDate: DateTime(2035),
+                        );
+                        if (picked != null) {
+                          setLocal(() => selectedDate = picked);
+                        }
+                      },
+                      borderRadius: BorderRadius.circular(22),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 14),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF7F7F7),
+                          borderRadius: BorderRadius.circular(22),
+                        ),
                         child: Text(
-                          "PROSES BARANG",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w900,
+                          "Tanggal: ${selectedDate.day.toString().padLeft(2, '0')}/${selectedDate.month.toString().padLeft(2, '0')}/${selectedDate.year}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w800,
+                            color: Colors.black54,
                           ),
                         ),
                       ),
-                      IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.close),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  AppCard(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      children: [
-                        _tableHeader(["ID", "Nama Barang", "Jumlah", "Harga"]),
-                        const SizedBox(height: 8),
-                        _tableRow([
-                          item.id,
-                          item.name,
-                          "${item.qty}",
-                          rupiah(item.costPrice),
-                        ]),
-                      ],
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Silahkan tentukan berapa yang ingin anda keluarkan ?",
-                      style: TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: qtyCtrl,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(hintText: "Jumlah"),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: sellCtrl,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(hintText: "Harga Jual"),
-                  ),
-                  const SizedBox(height: 10),
-                  InkWell(
-                    onTap: () => pickDate(setLocal),
-                    borderRadius: BorderRadius.circular(22),
-                    child: Container(
+
+                    const SizedBox(height: 14),
+
+                    SizedBox(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF7F7F7),
-                        borderRadius: BorderRadius.circular(22),
-                      ),
-                      child: Text(
-                        "Tanggal: ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w800,
-                          color: Colors.black54,
-                        ),
+                      child: FilledButton(
+                        onPressed: submit,
+                        child: const Text("KELUARKAN"),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 14),
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton(
-                      onPressed: submit,
-                      child: const Text("KELUARKAN"),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },
@@ -490,7 +621,7 @@ class _StockScreenState extends State<StockScreen> {
       context: context,
       isScrollControlled: true,
       showDragHandle: false,
-      backgroundColor: Colors.white, // ✅ hilangkan pink
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
@@ -539,8 +670,6 @@ class _StockScreenState extends State<StockScreen> {
                 ),
 
                 const SizedBox(height: 10),
-
-                // ✅ bagian form kamu tetap sama, jangan ubah isinya
                 TextField(
                     controller: nameCtrl,
                     decoration: const InputDecoration(hintText: "Nama Barang")),
