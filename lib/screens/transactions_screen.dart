@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../db/db.dart';
-import '../lib/format.dart';
+import 'package:stocklog2/lib/format.dart';
 import '../models/tx.dart';
 import '../ui/widgets.dart';
 
@@ -128,11 +128,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  Align(
+                  const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "URUTKAN BERDASARKAN",
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontWeight: FontWeight.w900, color: Colors.black54),
                     ),
                   ),
@@ -186,8 +186,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         borderRadius: BorderRadius.circular(6),
         color: Colors.white,
       ),
-      child: Row(
-        children: const [
+      child: const Row(
+        children: [
           Expanded(
             child: Text(
               "ID",

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../db/db.dart';
-import '../lib/uid.dart';
+import 'package:stocklog2/lib/uid.dart';
 import '../models/item.dart';
 import '../ui/widgets.dart';
 
@@ -106,9 +106,8 @@ class _InputScreenState extends State<InputScreen> {
       whereArgs: [name],
       limit: 1,
     );
-    final existing = existRows.isEmpty
-        ? null
-        : ItemRow.fromMap(existRows.first);
+    final existing =
+        existRows.isEmpty ? null : ItemRow.fromMap(existRows.first);
 
     if (existing != null) {
       await db.transaction((txn) async {
@@ -188,7 +187,6 @@ class _InputScreenState extends State<InputScreen> {
           subtitle: "Silahkan input barang baru yang ingin anda tambahkan",
         ),
         const SizedBox(height: 12),
-
         TextField(
           controller: nameCtrl,
           decoration: const InputDecoration(hintText: "Nama Barang"),
@@ -206,7 +204,6 @@ class _InputScreenState extends State<InputScreen> {
           decoration: const InputDecoration(hintText: "Harga"),
         ),
         const SizedBox(height: 10),
-
         InkWell(
           onTap: pickDate,
           borderRadius: BorderRadius.circular(22),
@@ -226,14 +223,12 @@ class _InputScreenState extends State<InputScreen> {
             ),
           ),
         ),
-
         const SizedBox(height: 10),
         TextField(
           controller: noteCtrl,
           decoration: const InputDecoration(hintText: "Catatan"),
         ),
         const SizedBox(height: 14),
-
         SizedBox(
           width: double.infinity,
           child: FilledButton(onPressed: submit, child: const Text("KIRIM")),

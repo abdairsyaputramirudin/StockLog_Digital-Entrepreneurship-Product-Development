@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../db/db.dart';
-import '../lib/format.dart';
+import 'package:stocklog2/lib/format.dart';
 import '../models/tx.dart';
 import '../ui/app_theme.dart';
 import '../ui/widgets.dart';
@@ -78,10 +78,12 @@ class _FinanceScreenState extends State<FinanceScreen> {
       final d = int.tryParse(parts[2]) ?? 0;
 
       if (mode == FinanceMode.year) return y == selected.year;
-      if (mode == FinanceMode.month)
+      if (mode == FinanceMode.month) {
         return y == selected.year && m == selected.month;
-      if (mode == FinanceMode.date)
+      }
+      if (mode == FinanceMode.date) {
         return y == selected.year && m == selected.month && d == selected.day;
+      }
       return true;
     }
 
