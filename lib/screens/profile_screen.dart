@@ -71,17 +71,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text("Konfirmasi",
-            style: TextStyle(fontWeight: FontWeight.w900)),
+        backgroundColor: Colors.white, // ✅ hilangkan pink
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+        title: const Text(
+          "Konfirmasi",
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
+            fontSize: 18,
+            color: Colors.black, // ✅ judul tidak putih
+          ),
+        ),
         content: const Text(
-            "Hapus semua data stok & transaksi? (Profil tetap tersimpan)"),
+          "Hapus semua data stok & transaksi?\n(Profil tetap tersimpan)",
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
+        ),
+        actionsPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text("Batal")),
-          TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text("Hapus")),
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text(
+              "Batal",
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                color: Colors.black54,
+              ),
+            ),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.blue, // ✅ tema biru
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: const Text(
+              "Hapus",
+              style: TextStyle(fontWeight: FontWeight.w800),
+            ),
+          ),
         ],
       ),
     );
