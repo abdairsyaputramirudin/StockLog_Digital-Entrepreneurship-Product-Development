@@ -546,27 +546,31 @@ class _StockScreenState extends State<StockScreen> {
 
     Future<void> save() async {
       final name = nameCtrl.text.trim();
-      final qty = int.tryParse(qtyCtrl.text.trim());
-      final price = int.tryParse(priceCtrl.text.trim());
+      final newQty = int.tryParse(qtyCtrl.text.trim());
+      final newCost = int.tryParse(priceCtrl.text.trim());
       final note = noteCtrl.text.trim();
 
       if (name.isEmpty ||
-          qty == null ||
-          qty < 0 ||
-          price == null ||
-          price < 0) {
+          newQty == null ||
+          newQty < 0 ||
+          newCost == null ||
+          newCost < 0) {
         await showInfoModal(context,
             title: "Validasi", message: "Data tidak valid.");
         return;
       }
 
       final db = await AppDb.instance.db;
+
+      final oldQty = item.qty;
+      final diff = newQty - oldQty;
+
       await db.update(
         'items',
         {
           'name': name,
-          'qty': qty,
-          'costPrice': price,
+          'qty': newQty,
+          'costPrice': newCost,
           'note': note,
           'updatedAt': DateTime.now().toIso8601String(),
         },
@@ -574,11 +578,58 @@ class _StockScreenState extends State<StockScreen> {
         whereArgs: [item.id],
       );
 
+      if (diff != 0) {
+        final now = DateTime.now();
+        final dateStr =
+            "${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')}/${now.year}"; // format kamu
+
+        if (diff > 0) {
+          await db.insert('transactions', {
+            'id': "TX-${now.microsecondsSinceEpoch}",
+            'type': "IN",
+            'itemId': item.id,
+            'itemName': name,
+            'qty': diff,
+            'unitPrice': newCost,
+            'costPriceAtThatTime': newCost,
+            'date': dateStr,
+          });
+        } else {
+          await db.insert('transactions', {
+            'id': "TX-${now.microsecondsSinceEpoch}",
+            'type': "OUT",
+            'itemId': item.id,
+            'itemName': name,
+            'qty': diff.abs(),
+            'unitPrice': 0,
+            'costPriceAtThatTime': newCost,
+            'date': dateStr,
+          });
+        }
+      }
+
       if (!mounted) return;
       Navigator.pop(context);
       await load();
-      await showInfoModal(context,
-          title: "NOTIFIKASI", message: "Produk berhasil diubah.");
+
+      if (diff > 0) {
+        await showInfoModal(
+          context,
+          title: "NOTIFIKASI",
+          message:
+              "Produk berhasil diubah.\nStok bertambah $diff (otomatis dicatat sebagai Barang Masuk).",
+        );
+      } else if (diff < 0) {
+        await showInfoModal(
+          context,
+          title: "NOTIFIKASI",
+          message:
+              "Produk berhasil diubah.\nStok berkurang ${diff.abs()} (otomatis dicatat sebagai penyesuaian).",
+        );
+      } else {
+        await showInfoModal(context,
+            title: "NOTIFIKASI", message: "Produk berhasil diubah.");
+      }
     }
 
     Future<void> deleteItem() async {
