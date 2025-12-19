@@ -78,7 +78,7 @@ class MenuIconButton extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             SizedBox(
-              height: 32, // ✅ biar semua label rata walau 2 baris
+              height: 32,
               child: Center(
                 child: Text(
                   label,
