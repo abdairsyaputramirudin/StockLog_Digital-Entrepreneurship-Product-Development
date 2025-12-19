@@ -28,7 +28,6 @@ Future<void> initDb() async {
     )
   ''');
 
-  // ✅ NEW: profile (single row, id=1)
   await db.execute('''
     CREATE TABLE IF NOT EXISTS profile (
       id INTEGER PRIMARY KEY NOT NULL,
@@ -38,7 +37,6 @@ Future<void> initDb() async {
     )
   ''');
 
-  // seed default if empty
   final rows = await db.query('profile', limit: 1);
   if (rows.isEmpty) {
     await db.insert(
