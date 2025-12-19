@@ -564,6 +564,8 @@ class _StockScreenState extends State<StockScreen> {
 
       final oldQty = item.qty;
       final diff = newQty - oldQty;
+      final oldCost = item.costPrice;
+      final oldName = item.name;
 
       await db.update(
         'items',
@@ -577,6 +579,32 @@ class _StockScreenState extends State<StockScreen> {
         where: 'id = ?',
         whereArgs: [item.id],
       );
+
+      if (newCost != oldCost || name != oldName) {
+        await db.update(
+          'transactions',
+          {'itemName': name},
+          where: 'itemId = ?',
+          whereArgs: [item.id],
+        );
+
+        await db.update(
+          'transactions',
+          {
+            'unitPrice': newCost,
+            'costPriceAtThatTime': newCost,
+          },
+          where: 'itemId = ? AND type = ?',
+          whereArgs: [item.id, 'IN'],
+        );
+
+        await db.update(
+          'transactions',
+          {'costPriceAtThatTime': newCost},
+          where: 'itemId = ? AND type = ?',
+          whereArgs: [item.id, 'OUT'],
+        );
+      }
 
       if (diff != 0) {
         final now = DateTime.now();
@@ -725,7 +753,6 @@ class _StockScreenState extends State<StockScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // drag handle manual (biar mirip HiFi)
                 Container(
                   width: 40,
                   height: 4,
@@ -735,7 +762,6 @@ class _StockScreenState extends State<StockScreen> {
                     borderRadius: BorderRadius.circular(999),
                   ),
                 ),
-
                 Row(
                   children: [
                     const Expanded(
@@ -753,7 +779,6 @@ class _StockScreenState extends State<StockScreen> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 10),
                 TextField(
                     controller: nameCtrl,
@@ -773,7 +798,6 @@ class _StockScreenState extends State<StockScreen> {
                 TextField(
                     controller: noteCtrl,
                     decoration: const InputDecoration(hintText: "Catatan")),
-
                 const SizedBox(height: 14),
                 SizedBox(
                     width: double.infinity,
