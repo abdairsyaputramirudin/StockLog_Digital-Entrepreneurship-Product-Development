@@ -414,7 +414,6 @@ class _StockScreenState extends State<StockScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // drag handle manual
                     Container(
                       width: 40,
                       height: 4,
@@ -425,7 +424,6 @@ class _StockScreenState extends State<StockScreen> {
                       ),
                     ),
 
-                    // Header title + close
                     Row(
                       children: [
                         const Expanded(

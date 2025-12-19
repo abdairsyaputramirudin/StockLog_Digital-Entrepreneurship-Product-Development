@@ -66,7 +66,7 @@ class _HomeShellState extends State<HomeShell> {
       backgroundColor: AppTheme.bg,
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: _loadName, // pull-to-refresh update nama
+          onRefresh: _loadName,
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
             children: [

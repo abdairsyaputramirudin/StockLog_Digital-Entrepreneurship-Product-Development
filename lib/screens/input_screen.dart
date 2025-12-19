@@ -53,7 +53,6 @@ class _InputScreenState extends State<InputScreen> {
       "${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}";
 
   Future<String> _nextItemId(Database db) async {
-    // ambil id terbesar, misal "007" -> 7 -> jadi 8 -> "008"
     final rows = await db.rawQuery(
       "SELECT id FROM items ORDER BY id DESC LIMIT 1",
     );
@@ -99,7 +98,6 @@ class _InputScreenState extends State<InputScreen> {
     final Database db = await AppDb.instance.db;
     final now = DateTime.now().toIso8601String();
 
-    // cek existing by name (MVP)
     final existRows = await db.query(
       'items',
       where: 'name = ?',
@@ -144,7 +142,6 @@ class _InputScreenState extends State<InputScreen> {
       return;
     }
 
-    // ✅ NEW: id urut 001
     final itemId = await _nextItemId(db);
 
     await db.transaction((txn) async {
