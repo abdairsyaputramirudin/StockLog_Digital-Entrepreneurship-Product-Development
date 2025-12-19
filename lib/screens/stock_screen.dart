@@ -567,6 +567,43 @@ class _StockScreenState extends State<StockScreen> {
       final oldCost = item.costPrice;
       final oldName = item.name;
 
+      if (newCost != oldCost) {
+        final confirm = await showDialog<bool>(
+          context: context,
+          builder: (_) => AlertDialog(
+            backgroundColor: Colors.white,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            title: const Text(
+              "Perubahan Harga",
+              style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 18,
+                  color: Colors.black),
+            ),
+            content: const Text(
+              "Mengubah harga barang akan mempengaruhi seluruh transaksi lama dan laporan keuangan.\n\n"
+              "Jika harga berbeda untuk batch baru, disarankan menambahkan barang sebagai item baru (ID baru).",
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text("Batal",
+                    style: TextStyle(color: Colors.black54)),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text("Lanjutkan"),
+              ),
+            ],
+          ),
+        );
+
+        if (confirm != true) {
+          return;
+        }
+      }
       await db.update(
         'items',
         {
