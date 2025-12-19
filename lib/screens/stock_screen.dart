@@ -585,16 +585,52 @@ class _StockScreenState extends State<StockScreen> {
       final confirm = await showDialog<bool>(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text("Hapus Produk",
-              style: TextStyle(fontWeight: FontWeight.w900)),
-          content: const Text("Produk ini akan dihapus permanen."),
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+          title: const Text(
+            "Hapus Produk",
+            style: TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: 18,
+              color: Colors.black,
+            ),
+          ),
+          content: const Text(
+            "Produk ini akan dihapus permanen.",
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+            ),
+          ),
+          actionsPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           actions: [
             TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text("Batal")),
-            TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text("Hapus")),
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text(
+                "Batal",
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black54,
+                ),
+              ),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text(
+                "Hapus",
+                style: TextStyle(fontWeight: FontWeight.w800),
+              ),
+            ),
           ],
         ),
       );
