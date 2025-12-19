@@ -40,7 +40,6 @@ class _FinanceScreenState extends State<FinanceScreen> {
       rows = data.map((m) => TxRow.fromMap(m)).toList();
       loading = false;
     });
-    // default hitung keseluruhan
     compute();
   }
 
@@ -55,12 +54,10 @@ class _FinanceScreenState extends State<FinanceScreen> {
   }
 
   Future<void> pickMonth() async {
-    // MVP cepat: pakai datePicker juga, lalu ambil month-nya
     await pickDate();
   }
 
   Future<void> pickYear() async {
-    // MVP cepat: pakai datePicker juga, lalu ambil year-nya
     await pickDate();
   }
 

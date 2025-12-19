@@ -1,6 +1,6 @@
 class TxRow {
   final String id;
-  final String type; // IN / OUT
+  final String type;
   final String itemId;
   final String itemName;
   final int qty;
